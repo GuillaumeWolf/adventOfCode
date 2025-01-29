@@ -22,26 +22,37 @@ def check(i,j,data):
     return tot
 
 
-def show_X_mas(data, i=-10, j=-10):
+def show_X_mas(data, i=0, j=0, color='\033[92m'):
     for a in range(data.shape[0]):
         print()
         for b in range(data.shape[1]):
             if ((a==i or a==i+2) and (b==j or b==j+2)) or (a==i+1 and b==j+1):
-                print('\033[92m', end='')
-            print(data[a,b], end=' ')
+                print(color, end='')
+                print(data[a,b], end=' ')
+            else: print(' ', end=' ')
             if a>=i and a<i+3 and b>=j and b<j+3:
                 print('\033[0m', end='')
     print()
 
 
 def check2(i,j,data):
-    conds = ('i-1,j-1', 'i-1,j+1', 'i+1,j-1', 'i+1,j+1')
-    for c in conds:
-        if not data[eval(c)] in ('M', 'S'): 
-            return 0
-    x = [data[eval(c)] for c in conds]
-    if x==['M','S','S','M'] or x==['S','M','M','S']:
+    chars = data[i-1:i+2,j-1:j+2]
+    if (   i==0 
+        or j==0 
+        or i==data.shape[0]-1
+        or j==data.shape[1]-1):
         return 0
+    if not data[i,j]=='A': return 0
+    diags = ((i-1,j-1), (i-1,j+1), (i+1,j-1), (i+1,j+1))
+    for d in diags:
+        if not data[d] in ('M', 'S'): 
+            show_X_mas(chars,color='\033[31m') # display
+            return 0
+    x = [data[d] for d in diags]
+    if x==['M','S','S','M'] or x==['S','M','M','S']:
+        show_X_mas(chars,color='\033[33m') # display
+        return 0
+    show_X_mas(chars) # display
     return 1
 
 
@@ -68,13 +79,10 @@ print('Part 1:', n_XMAS)
 
 # Part2: solve
 n_XMAS = 0
-for i,line in enumerate(data):
-    for j,char in enumerate(line):
-        if (not i==0 and not j==0 
-            and not i==data.shape[0]-1
-            and not j==data.shape[1]-1
-            and data[i,j]=='A'  ):
-            n_XMAS += check2(i,j,data)
+for i in range(data.shape[0]):
+    for j in range(data.shape[1]):
+        x = check2(i,j,data)
+        n_XMAS += x
 
 print('Part 2:', n_XMAS)
 
