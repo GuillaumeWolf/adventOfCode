@@ -49,7 +49,10 @@ def check2(i,j,data):
             show_X_mas(chars,color='\033[31m') # display
             return 0
     x = [data[d] for d in diags]
-    if x==['M','S','S','M'] or x==['S','M','M','S']:
+    if not (x==['M','S','M','S'] 
+            or x==['S','M','S','M']
+            or x==['S','S','M','M']
+            or x==['M','M','S','S']):
         show_X_mas(chars,color='\033[33m') # display
         return 0
     show_X_mas(chars) # display
