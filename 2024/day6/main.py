@@ -28,7 +28,7 @@ def show(map):
         for box in line:
             if box=='.': print(' ', end='')
             elif box in list(next_coor.keys()):
-                print('\033[31m', box, '\033[0m')
+                print('\033[31m', box, '\033[0m', sep='', end='')
             else:print(box, end='')
         print('|')
     print(' ', end='')
@@ -77,23 +77,53 @@ def make_a_step(map):
             new_coordonnee = coordonnee + next_coor[dir]
         map[*coordonnee] = 'X'
         map[*new_coordonnee] = dir
-    return map, not in_map_range(new_coordonnee, map)
+    return not in_map_range(new_coordonnee, map)
 
 
-show(map)
+def mult(*input):
+    a = 1
+    for x in input:
+        a *= x
+    return a
+
 
 # Part 1: solve
-step = 0
-out = False
-while not out:
-    # print(f'Step {step}')
-    map, out = make_a_step(map)
-    # show(map)
-    # print('\n\n\n')
-    step += 1 
-show(map)
-print(path_length(map)+1)
+if False:
+    show(map)
+    step = 0
+    out = False
+    while not out:
+        # print(f'Step {step}')
+        map, out = make_a_step(map)
+        # show(map)
+        # print('\n\n\n')
+        step += 1 
+    show(map)
+    print(path_length(map)+1)
 
 
+
+
+# Part 2: solve
+box_that_loop = 0
+print(map.shape)
+for i in range(map.shape[0]):
+    for j in range(map.shape[1]):
+        print(i,j)
+        if not map[i,j]=='.': continue
+        map_copy = map.copy()
+        map_copy[i,j] = '#'
+        looped = False
+        out = False
+        step = 0
+        while not out and not looped:
+            out = make_a_step(map_copy)
+            step += 1 
+            looped = step>(mult(*map_copy.shape)*100)
+        if looped: 
+            print('Loop found')
+            show(map_copy)
+            box_that_loop += 1
+print(box_that_loop)
 
 
