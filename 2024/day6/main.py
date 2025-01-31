@@ -1,4 +1,6 @@
 import numpy as np
+import time 
+
 
 next_coor = {
     '^':np.array((-1,0)),
@@ -87,6 +89,14 @@ def mult(*input):
     return a
 
 
+def measure_time(func, funcname, *args, **kwargs):
+    t0 = time.time()
+    output = func(*args, **kwargs)
+    t1 = time.time()
+    print(f'func {funcname} took {(t1-t0)*1000:.1f} ms to run. ')
+    return output
+
+
 # Part 1: solve
 if False:
     show(map)
@@ -107,23 +117,38 @@ if False:
 # Part 2: solve
 box_that_loop = 0
 print(map.shape)
+start = {'coor': get_coordonnee(map), 'dir': get_dir(map)}
+wall = [(i,j)
+        for i in range(map.shape[0])
+        for j in range(map.shape[1])
+        if map[i,j]]
 for i in range(map.shape[0]):
     for j in range(map.shape[1]):
+        if (i,j) in wall: continue
+        position = start.copy()
         print(i,j)
-        if not map[i,j]=='.': continue
-        map_copy = map.copy()
-        map_copy[i,j] = '#'
         looped = False
+                
+        
+        t0 = time.time()
+        map[i,j] = '#'
         out = False
         step = 0
         while not out and not looped:
-            out = make_a_step(map_copy)
+            # print(step)
+            out = make_a_step(map)
             step += 1 
-            looped = step>(mult(*map_copy.shape)*100)
+            looped = step>(mult(*map.shape))
         if looped: 
             print('Loop found')
-            show(map_copy)
+            show(map)
             box_that_loop += 1
+        map[i,j] = '.'
+        map[*get_coordonnee(map)] = '.'
+        map[*start['coor']] = start['dir']
+        t1 = time.time()
+        print(f'Loop took {(t1-t0)*1000:.1f} ms to run. ')
+
 print(box_that_loop)
 
 
