@@ -32,9 +32,8 @@ def check(goal, inter_prod, nums, funcs=funcs):
     for func in funcs:
         # print(func.__name__)
         new_inter_prod = func(inter_prod, nums[0])
-        # print(f'{new_inter_prod = }')
         if new_inter_prod>goal: continue
-        goal_reached.append(check(goal, new_inter_prod, nums[1:]))
+        goal_reached.append(check(goal, new_inter_prod, nums[1:], funcs=funcs))
     # print() 
     return any(goal_reached)
 
